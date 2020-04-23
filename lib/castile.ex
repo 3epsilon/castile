@@ -373,8 +373,15 @@ defmodule Castile do
         {:ok, resp, _} = :erlsom.scan(body, model.model, output_encoding: :utf8)
 
         output = resolve_element(op.output, types)
-        soap_envelope(body: soap_body(choice: [{^output, _, body}])) = resp
+        soap_envelope(body: soap_body(choice: [choice])) = resp
+        [^output, [] | choice_list] = :erlang.tuple_to_list(choice)
+        ret = 
+          choice_list
+          |> Enum.filter(&(&1 != :undefined))
+          |> transform(types)
+
         # parse body further into a map
+        {:ok, ret}
         {:ok, transform(body, types)}
       {:ok, %{status_code: 500, body: body}} ->
         {:ok, resp, _} = :erlsom.scan(body, model.model, output_encoding: :utf8)
