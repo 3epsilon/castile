@@ -382,7 +382,6 @@ defmodule Castile do
 
         # parse body further into a map
         {:ok, ret}
-        {:ok, transform(body, types)}
       {:ok, %{status_code: 500, body: body}} ->
         {:ok, resp, _} = :erlsom.scan(body, model.model, output_encoding: :utf8)
         soap_envelope(body: soap_body(choice: [soap_fault() = fault])) = resp
